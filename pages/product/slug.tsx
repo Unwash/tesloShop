@@ -3,6 +3,7 @@ import { ProductSlideShow, SizeSelector } from "@/components/products"
 import { ItemCounter } from "@/components/ui"
 import { initialData } from "@/database/products"
 import { Box, Button, Chip, Grid, Typography } from "@mui/material"
+import { GetStaticProps } from "next"
 
 const product = initialData.products[0]
 
@@ -47,5 +48,13 @@ export const ProductPage = () => {
     </ShopLayout>
     )
   }
+
+  // export const getStaticProps : GetStaticProps = async (ctx) =>{
+  //   return {
+  //     props:{
+
+  //     }
+  //   }
+  // }
   
   export default ProductPage
