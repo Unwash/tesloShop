@@ -1,8 +1,30 @@
-import { SearchOutlined, ShoppingCartOutlined } from "@mui/icons-material"
-import { AppBar, Badge, Box, Button, IconButton, Link, Toolbar, Typography } from "@mui/material"
+import { UiContext } from "@/context"
+import { ClearOutlined, SearchOutlined, ShoppingCartOutlined } from "@mui/icons-material"
+import { AppBar, Badge, Box, Button, IconButton, Input, InputAdornment, Link, Toolbar, Typography } from "@mui/material"
 import NextLink from "next/link"
+import { useRouter } from "next/router"
+import { useContext, useState } from "react"
+
 
 export const Navbar = () => {
+
+    const { toogleSideMenu } = useContext(UiContext)
+
+    const { asPath, push } = useRouter()
+
+    const [searchTerm, setSearchTerm] = useState("")
+
+    const [isSearchVisible, setisSearchVisible] = useState(false)
+
+
+    const onSearchTerm = () => {
+        if (searchTerm.trim().length < 1) return;
+        push(`/search/${searchTerm}`)
+    }
+
+  
+
+
     return (
         <AppBar>
             <Toolbar>
@@ -17,29 +39,72 @@ export const Navbar = () => {
 
                 <Box flex={1} />
 
-                <Box sx={{ display:{xs:"none",sm:"block"} }}>
+                <Box  sx={{ display: isSearchVisible ? "none" : { xs: "none", sm: "block" } }} className="fadeIn" >
                     <NextLink href="/category/men" passHref legacyBehavior>
                         <Link>
-                            <Button>Hombres</Button>
+                            <Button color={asPath === '/category/men' ? "primary" : "info"}  >Hombres</Button>
                         </Link>
                     </NextLink>
 
                     <NextLink href="/category/women" passHref legacyBehavior>
                         <Link>
-                            <Button>Mujeres</Button>
+                            <Button color={asPath === '/category/women' ? "primary" : "info"} >Mujeres</Button>
                         </Link>
                     </NextLink>
 
                     <NextLink href="/category/kid" passHref legacyBehavior>
                         <Link>
-                            <Button>Niños</Button>
+                            <Button color={asPath === '/category/kid' ? "primary" : "info"} >Niños</Button>
                         </Link>
                     </NextLink>
                 </Box>
 
                 <Box flex={1} />
+                {/* PANTALLAS GRANDES */}
+              
 
-                <IconButton>
+                {
+                    isSearchVisible
+                    ?(
+                        <Input
+                        autoFocus
+                        className="fadeIn"
+                        value={searchTerm}
+                        onKeyPress={(e) => e.key === "Enter" ? onSearchTerm() : ""}
+                        type='text'
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Buscar..."
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton
+                                    onClick={onSearchTerm}
+                                    aria-label="toggle password visibility"
+                                >
+                                    <ClearOutlined onClick={()=>setisSearchVisible(false)} />
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                    />
+                    )
+                    :(
+                           <IconButton
+                           sx={{ display: { xs: "none", sm: "flex" } }}
+                           onClick={()=>setisSearchVisible(true)}
+                           className="fadeIn"
+                           >
+                    <SearchOutlined />
+                </IconButton> 
+                    )
+                }
+
+               
+
+
+                {/* PANTALLAS PEQUEÑAS */}
+                <IconButton
+                    sx={{ display: { xs: "flex", sm: "none" } }}
+                    onClick={toogleSideMenu}
+                >
                     <SearchOutlined />
                 </IconButton>
 
@@ -53,7 +118,7 @@ export const Navbar = () => {
                     </Link>
                 </NextLink>
 
-                <Button>
+                <Button onClick={toogleSideMenu}>
                     Menu
                 </Button>
 

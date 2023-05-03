@@ -24,6 +24,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",
     "react-slideshow-image": "^4.2.1",
+    "swr": "^2.1.5",
     "typescript": "5.0.4"
   }
 }
