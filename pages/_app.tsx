@@ -1,4 +1,4 @@
-import { UiProvider } from '@/context';
+import { UiProvider,CartProvider } from '@/context';
 import '@/styles/globals.css'
 import { lightTheme } from '@/themes'
 import { CssBaseline, ThemeProvider } from '@mui/material'
@@ -12,6 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <SWRConfig value={{
        fetcher:(resource,init) => fetch(resource,init).then(res=>res.json())
     }}>
+      <CartProvider>
       <UiProvider>
     
     <ThemeProvider theme={lightTheme}>
@@ -19,6 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Component {...pageProps} />
     </ThemeProvider>
     </UiProvider>
+    </CartProvider>
     </SWRConfig>
  
   )

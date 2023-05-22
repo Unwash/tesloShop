@@ -4,7 +4,7 @@ import mongoose, {Schema,model,Model} from "mongoose";
 const productSchema = new Schema({
     description:{type:String, required:true},
     images:[{type:String}],
-    inStock:{type:String, required:true, default:0},
+    inStock:{type:Number, required:true, default:0},
     price:{type:Number, required:true,default:0},
     sizes:[{type:String, enum:{values:['XS','S','M','L','XL','XXL','XXXL'],message:"{VALUE} no es un tamaño válido"}}],
     slug:{type:String, required:true, unique:true},
