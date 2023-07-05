@@ -1,13 +1,14 @@
 import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
 import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined } from "@mui/icons-material"
 import { useContext, useState } from "react"
-import { UiContext } from "@/context"
+import { AuthContext, UiContext } from "@/context"
 import { useRouter } from 'next/router';
 
 
 export const SideMenu = () => {
 
     const { isMenuOpen,toogleSideMenu } = useContext(UiContext)
+    const { user,isLoggedIn,logOutUser } = useContext(AuthContext)
     const router = useRouter()
 
     const [searchTerm, setSearchTerm] = useState("")
@@ -16,6 +17,10 @@ export const SideMenu = () => {
     const onSearchTerm = () =>{
         if(searchTerm.trim().length < 1) return;
         navigateTo(`/search/${searchTerm}`)
+    }
+
+    const handleLogOut = ()=>{
+        logOutUser()
     }
 
     const navigateTo = (url: string) => {
@@ -56,14 +61,14 @@ export const SideMenu = () => {
                         />
                     </ListItem>
 
-                    <ListItem button>
+                    <ListItem button sx={{ display: isLoggedIn ? '' : 'none' }}>
                         <ListItemIcon>
                             <AccountCircleOutlined />
                         </ListItemIcon>
                         <ListItemText primary={'Perfil'} />
                     </ListItem>
 
-                    <ListItem button>
+                    <ListItem button sx={{ display: isLoggedIn ? '' : 'none' }}>
                         <ListItemIcon>
                             <ConfirmationNumberOutlined />
                         </ListItemIcon>
@@ -93,24 +98,25 @@ export const SideMenu = () => {
                     </ListItem>
 
 
-                    <ListItem button>
+                    <ListItem button sx={{ display: isLoggedIn ? 'none' : '' }} onClick={()=>navigateTo(`/auth/login?p=${router.asPath}`)} >
                         <ListItemIcon>
                             <VpnKeyOutlined />
                         </ListItemIcon>
-                        <ListItemText primary={'Ingresar'} />
+                        <ListItemText  primary={'Ingresar'} />
                     </ListItem>
 
-                    <ListItem button>
+                    <ListItem button sx={{ display: isLoggedIn ? '' : 'none' }} > 
                         <ListItemIcon>
                             <LoginOutlined />
                         </ListItemIcon>
-                        <ListItemText primary={'Salir'} />
+                        <ListItemText onClick={handleLogOut} primary={'Salir'} />
                     </ListItem>
 
 
                     {/* Admin */}
+                    <Box sx={{ display: user?.role === "admin" ? '' : 'none' }} >
                     <Divider />
-                    <ListSubheader>Admin Panel</ListSubheader>
+                    <ListSubheader >Admin Panel</ListSubheader>
 
                     <ListItem button>
                         <ListItemIcon>
@@ -131,6 +137,7 @@ export const SideMenu = () => {
                         </ListItemIcon>
                         <ListItemText primary={'Usuarios'} />
                     </ListItem>
+                    </Box>
                 </List>
             </Box>
         </Drawer>

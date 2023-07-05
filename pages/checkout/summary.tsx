@@ -2,8 +2,18 @@ import { ShopLayout } from "@/components/layouts"
 import { Box, Button, Card, Divider, Grid, Typography, Link, CardContent } from "@mui/material"
 import { CartList, OrderSumary } from "@/components/cart"
 import NextLink from "next/link"
+import { useContext } from "react"
+import { CartContext } from "@/context"
+import { countries } from "@/utils/countries"
 
 const SummaryPage = () => {
+
+    const {shippingAddress} = useContext(CartContext)
+
+    if(!shippingAddress) return <></>
+
+    const {firstName,lastName,address,address2="",city,zip,country} = shippingAddress
+    
     return (
         <ShopLayout title="Resumen de orden" pageDescription="Resumen de la orden" >
             <>
@@ -30,23 +40,25 @@ const SummaryPage = () => {
                             </Box>
  
                             <Typography >
-                                Cesar Millan
+                                {`${firstName} ${lastName}`}
                             </Typography>
 
                             <Typography >
-                                adsdasdds
+                                {address} {address2 ? address2 : ''}
                             </Typography>
 
                             <Typography >
-                                Polly
+                               {city} {zip}
+                            </Typography>
+
+                            <Typography > 
+                                {countries.find((c)=> c.code === country)?.name }
+                                
+                                
                             </Typography>
 
                             <Typography >
-                                Mexico
-                            </Typography>
-
-                            <Typography >
-                                +52 6672027152
+                                {shippingAddress.phone}
                             </Typography>
 
                             <Divider sx={{ my: 1 }} />
