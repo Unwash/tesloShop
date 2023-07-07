@@ -48,9 +48,14 @@ const AddressPage = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset
   } = useForm<FormData>({
     defaultValues: getAddressFromCookies()
   });
+
+  useEffect(()=>{
+    reset(getAddressFromCookies())
+  },[reset])
 
   const onSubmitAddress = (data: FormData) => {
     console.log(data);
@@ -149,7 +154,7 @@ const AddressPage = () => {
                 select
                 variant="filled"
                 label="pais"
-                defaultValue={ Cookies.get('country') ||  countries[0]?.code}
+                defaultValue={   countries[0]?.code}
                 {...register("country", {
                   required: "Este campo es requerido",
                 })}

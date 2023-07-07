@@ -2,13 +2,23 @@ import { ShopLayout } from "@/components/layouts"
 import { Box, Button, Card, Divider, Grid, Typography, Link, CardContent } from "@mui/material"
 import { CartList, OrderSumary } from "@/components/cart"
 import NextLink from "next/link"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { CartContext } from "@/context"
 import { countries } from "@/utils/countries"
+import Cookies from "js-cookie"
+import { useRouter } from "next/router"
 
 const SummaryPage = () => {
 
+    const router = useRouter()
+
     const {shippingAddress} = useContext(CartContext)
+
+    useEffect(()=>{
+        if(!Cookies.get("firstName")){
+            router.push("/checkout/address")
+        }
+    },[])
 
     if(!shippingAddress) return <></>
 

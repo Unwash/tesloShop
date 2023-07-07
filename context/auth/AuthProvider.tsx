@@ -5,7 +5,7 @@ import { tesloApi } from "@/api";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
-
+import { useSession, signOut } from "next-auth/react";
 export interface AuthState {
   isLoggedIn: boolean;
   user?: IUser;
@@ -22,24 +22,29 @@ interface Props {
 
 export const AuthProvider: FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
-  const router = useRouter()
+  const {data,status} = useSession()
+  const router = useRouter();
 
-  useEffect(() => {
-    checkToken();
-  }, []);
+ useEffect(()=>{
+  if(status === "authenticated"){
+    console.log(data.user)
+    dispatch({type: "[Auth] - Login",payload:data?.user as IUser}) 
+  }
+ },[status,data])
+
+  // useEffect(() => {
+  //   checkToken();
+  // }, []);
 
   const checkToken = async () => {
-
-  
-
     try {
       const { data } = await tesloApi.get("user/validate-token");
-      const {token,user} = data
+      const { token, user } = data;
       Cookies.set("token", token);
       dispatch({ type: "[Auth] - Login", payload: user });
     } catch (err) {
-        console.log(err)
-        Cookies.remove("token")
+      console.log(err);
+      Cookies.remove("token");
     }
   };
 
@@ -61,11 +66,22 @@ export const AuthProvider: FC<Props> = ({ children }) => {
     }
   };
 
-  const logOutUser = ()=>{
-    Cookies.remove("token")
-    Cookies.remove("cart")
-    router.reload();
-  }
+  const logOutUser = () => {
+    // Cookies.remove("token");
+    Cookies.remove("cart");
+    Cookies.remove("firstName");
+    Cookies.remove("lastName");
+    Cookies.remove("address");
+    Cookies.remove("address2");
+    Cookies.remove("zip");
+    Cookies.remove("city");
+    Cookies.remove("country");
+    Cookies.remove("phone");
+
+    signOut();
+
+    // router.reload();
+  };
 
   const registerUser = async (
     name: string,
@@ -111,7 +127,7 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 
         loginUser,
         registerUser,
-        logOutUser
+        logOutUser,
       }}
     >
       {children}

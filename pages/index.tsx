@@ -7,7 +7,11 @@ import { useProducts } from '@/hooks'
 import { Typography } from '@mui/material'
 
 
+
 export default function HomePage() {
+
+
+
 
   const {products,isLoading} = useProducts("/products")
 
