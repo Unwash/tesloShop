@@ -1,33 +1,27 @@
 import { FC, useEffect, useReducer } from "react";
 import { cartReducer, CartContext } from "./";
-import { ICartProduct } from "@/interfaces";
+import { ICartProduct, IOrder } from "@/interfaces";
 import Cookie from "js-cookie";
+import { ShippingAddress } from "@/interfaces";
+import { tesloApi } from "@/api";
+import axios from "axios";
 
 export interface CartState {
   cart: ICartProduct[];
   numberOfItems: number;
   subTotal: number;
-  impuestos: number;
+  tax: number;
   total: number;
   shippingAddress: ShippingAddress;
 }
 
-export interface ShippingAddress {
-  firstName: string;
-  lastName: string;
-  address: string;
-  address2?: string;
-  zip: string;
-  city: string;
-  country: string;
-  phone: string;
-}
+
 
 const CART_INITIAL_STATE: CartState = {
   cart: [],
   numberOfItems: 0,
   subTotal: 0,
-  impuestos: 0,
+  tax: 0,
   total: 0,
   shippingAddress: {
     firstName: "",
@@ -106,11 +100,11 @@ export const CartProvider: FC<Props> = ({ children }) => {
         (prev, current) => current.price * current.quantity + prev,
         0
       ),
-      impuestos: 0,
+      tax: 0,
       total: 0,
     };
-    orderSummary.impuestos = orderSummary.subTotal * taxRate;
-    orderSummary.total = orderSummary.subTotal + orderSummary.impuestos;
+    orderSummary.tax = orderSummary.subTotal * taxRate;
+    orderSummary.total = orderSummary.subTotal + orderSummary.tax;
 
     dispatch({ type: "[Cart] - Update order summary", payload: orderSummary });
   }, [state.cart]);
@@ -157,6 +151,54 @@ export const CartProvider: FC<Props> = ({ children }) => {
     dispatch({type:"[Cart] - Update Address", payload:address})
   }
 
+  const createOrder = async ():Promise <{hasError:boolean; message: string }>  =>{
+    try {
+
+      if(!state.shippingAddress){
+        throw new Error("No hay direccion de entrega")
+      }
+
+      const body:IOrder = {
+        orderItems:state.cart.map((p)=>({
+          ...p,
+          image:p.image,
+          size:p.size!
+        })),
+        shippingAddress:state.shippingAddress,
+        numberOfItems:state.numberOfItems,
+        subTotal:state.subTotal,
+        tax:state.tax,
+        total:state.total,
+        isPaid:false
+      }
+      
+      const {data} = await tesloApi.post("/orders",body)
+
+      dispatch({type: "[Cart] - Order complete"})
+
+      return {
+        hasError:false,
+        message:data._id!
+      }
+
+
+    } catch (error) {
+      console.log(error)
+
+      if(axios.isAxiosError(error)){
+        return{
+          hasError:true,
+          message:error.response?.data.message
+        }
+      }
+
+      return {
+        hasError:true,
+        message:"Ocurrio un error al crear la orden"
+      }
+    }
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -165,7 +207,8 @@ export const CartProvider: FC<Props> = ({ children }) => {
         addProductToCart,
         updateCartQuantity,
         removeCartProduct,
-        updateAddress
+        updateAddress,
+        createOrder,
       }}
     >
       {children}

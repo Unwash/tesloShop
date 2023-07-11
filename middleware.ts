@@ -21,6 +21,7 @@ export async function middleware(req: NextRequest) {
         // return NextResponse.next()
 
         const session = await getToken({req,secret:process.env.NEXTAUTH_URL})
+
        
         if(!session){
             const requestedPage = req.nextUrl.pathname;
