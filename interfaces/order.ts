@@ -13,6 +13,7 @@ import { IUser } from "./user";
     total:number
     isPaid:boolean
     paidAt?:string
+    transactionId?:string
   }
 
   export interface IOrderItem{
