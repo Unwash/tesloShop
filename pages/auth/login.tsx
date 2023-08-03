@@ -4,7 +4,7 @@ import NextLink from "next/link"
 import { useForm } from "react-hook-form"
 import { isEmail } from "@/utils"
 import { ErrorOutline } from "@mui/icons-material"
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from "next/router"
 import { getSession, signIn, getProviders } from "next-auth/react"
 import { GetServerSideProps } from 'next'

@@ -17,9 +17,7 @@ export const authOptions = {
         },
 
         async authorize(credentials)  {
-            console.log(credentials)
             const res = await dbUsers.checkUserEmailPassword(credentials?.email!,credentials?.password!)
-            console.log(res )
             return res
         }
     }),
@@ -53,7 +51,7 @@ export const authOptions = {
   callbacks:{
 
     async jwt({token,account,user}){
-        console.log(token,account,user)
+        // console.log(token,account,user)
 
         if(account){
             token.accessToken = account.access_token;
