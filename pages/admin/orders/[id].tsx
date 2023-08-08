@@ -20,10 +20,6 @@ import { dbOrders } from "@/database";
 import { IOrder } from "@/interfaces";
 import { countries } from "@/utils/countries";
 
-
-
-
-
 interface Props {
   order: IOrder;
 }
@@ -32,9 +28,6 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
 
   const { shippingAddress, _id, numberOfItems, isPaid, orderItems } = order;
 
-
-
-
   return (
     <AdminLayout
       title={`Resumen de orden`}
@@ -42,7 +35,6 @@ const OrderDetailPage: NextPage<Props> = ({ order }) => {
       icon={<AirplaneTicketOutlined  sx={{marginRight:"5px"}}/>}
     >
       <>
-
 
         <Chip
           sx={{ my: 2, display: !isPaid ? "" : "none" }}

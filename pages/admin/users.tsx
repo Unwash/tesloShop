@@ -14,17 +14,18 @@ import { tesloApi } from "@/api";
 import { User } from "@/models";
 
 const UsersPage = () => {
+
   const { data, error } = useSWR<IUser[]>("/api/admin/users");
 
-  if (!data && !error) return <></>;
-
   const [users, setUsers] = useState<IUser[]>([]);
-
+ 
   useEffect(() => {
     if (data) {
       setUsers(data);
     }
   }, [data]);
+
+  if (!data && !error) return <></>;
 
   const onRoleUpdated = async (userId: string, newRole: string) => {
     const previosUsers = users.map((user) => ({ ...user }));
